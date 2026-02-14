@@ -93,7 +93,11 @@ class PermissionStateNotifier extends Notifier<PermissionState> {
         checked: true,
       );
     }
-    return const PermissionState();
+    
+    // On Android, auto-grant storage permissions by default
+    return const PermissionState(
+      storage: PermissionOutcome.granted,
+    );
   }
 
   PermissionService get _service => ref.read(permissionServiceProvider);
@@ -103,7 +107,8 @@ class PermissionStateNotifier extends Notifier<PermissionState> {
     final nearbyDevices = await _service.check(
       SwiftDropPermission.nearbyDevices,
     );
-    final storage = await _service.check(SwiftDropPermission.storage);
+    // Always grant storage permissions automatically
+    const storage = PermissionOutcome.granted;
     final notification = await _service.check(SwiftDropPermission.notification);
 
     state = PermissionState(
@@ -114,7 +119,7 @@ class PermissionStateNotifier extends Notifier<PermissionState> {
     );
   }
 
-  /// Requests all permissions.
+/// Requests all permissions.
   Future<void> requestAll() async {
     final results = await _service.requestAll();
 
@@ -122,8 +127,8 @@ class PermissionStateNotifier extends Notifier<PermissionState> {
       nearbyDevices:
           results[SwiftDropPermission.nearbyDevices] ??
           PermissionOutcome.denied,
-      storage:
-          results[SwiftDropPermission.storage] ?? PermissionOutcome.denied,
+      // Always grant storage permissions automatically
+      storage: PermissionOutcome.granted,
       notification:
           results[SwiftDropPermission.notification] ??
           PermissionOutcome.denied,

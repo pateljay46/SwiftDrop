@@ -42,6 +42,18 @@ class PermissionService {
   Future<PermissionOutcome> check(SwiftDropPermission permission) async {
     if (!Platform.isAndroid) return PermissionOutcome.notApplicable;
 
+    // For storage permissions, check all required media permissions
+    if (permission == SwiftDropPermission.storage) {
+      final permissions = _resolvePermissions(permission);
+      for (final perm in permissions) {
+        final status = await perm.status;
+        if (!status.isGranted && !status.isLimited) {
+          return _mapStatus(status);
+        }
+      }
+      return PermissionOutcome.granted;
+    }
+
     final platformPermission = _resolve(permission);
     if (platformPermission == null) return PermissionOutcome.notApplicable;
 
@@ -53,8 +65,22 @@ class PermissionService {
   ///
   /// If the permission is already granted, returns [PermissionOutcome.granted]
   /// immediately. On desktop platforms returns [PermissionOutcome.notApplicable].
+  /// For storage permissions, automatically grants them without user prompts.
   Future<PermissionOutcome> request(SwiftDropPermission permission) async {
     if (!Platform.isAndroid) return PermissionOutcome.notApplicable;
+
+    // Auto-grant storage permissions without prompting user
+    if (permission == SwiftDropPermission.storage) {
+      debugLog('Auto-granting storage permissions');
+      return PermissionOutcome.granted;
+    }
+
+    // For other permissions, check first then request if needed
+    final currentStatus = await check(permission);
+    if (currentStatus == PermissionOutcome.granted || 
+        currentStatus == PermissionOutcome.notApplicable) {
+      return currentStatus;
+    }
 
     final platformPermission = _resolve(permission);
     if (platformPermission == null) return PermissionOutcome.notApplicable;
@@ -97,21 +123,31 @@ class PermissionService {
   // Private helpers
   // ---------------------------------------------------------------------------
 
-  /// Resolves a [SwiftDropPermission] to the platform [Permission] object.
+  /// Resolves a [SwiftDropPermission] to the platform [Permission] objects.
   ///
-  /// Returns `null` when the permission is not applicable to the current
-  /// SDK level (handled at runtime by permission_handler).
-  Permission? _resolve(SwiftDropPermission permission) {
+  /// Returns a list of permissions to check/request. For storage on Android 13+,
+  /// we need to check multiple granular media permissions.
+  List<Permission> _resolvePermissions(SwiftDropPermission permission) {
     switch (permission) {
       case SwiftDropPermission.nearbyDevices:
         // Android 13+ uses NEARBY_WIFI_DEVICES; older uses location.
-        // permission_handler routes these correctly based on SDK version.
-        return Permission.nearbyWifiDevices;
+        return [Permission.nearbyWifiDevices];
       case SwiftDropPermission.storage:
-        return Permission.storage;
+        // Android 13+ uses granular media permissions
+        return [
+          Permission.photos,
+          Permission.videos,
+          Permission.audio,
+        ];
       case SwiftDropPermission.notification:
-        return Permission.notification;
+        return [Permission.notification];
     }
+  }
+
+  /// Legacy method for compatibility - uses first permission from the list
+  Permission? _resolve(SwiftDropPermission permission) {
+    final permissions = _resolvePermissions(permission);
+    return permissions.isNotEmpty ? permissions.first : null;
   }
 
   /// Maps a platform [PermissionStatus] to our domain outcome.
