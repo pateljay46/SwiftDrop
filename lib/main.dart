@@ -118,9 +118,9 @@ class _AppShellState extends ConsumerState<AppShell> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.radar_rounded),
-            activeIcon: Icon(Icons.radar_rounded),
-            label: 'Devices',
+            icon: Icon(Icons.home_rounded),
+            activeIcon: Icon(Icons.home_rounded),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.swap_horiz_rounded),
