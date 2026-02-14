@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=SwiftDrop
+Comment=Zero-configuration encrypted file sharing
+Exec=swiftdrop
+Icon=swiftdrop
+Terminal=false
+Categories=Network;FileTransfer;Utility;
+Keywords=file;share;transfer;send;receive;
+StartupNotify=true
+MimeType=application/octet-stream;

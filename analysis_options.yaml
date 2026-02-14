@@ -1,0 +1,29 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Style
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+    sort_constructors_first: true
+    unnecessary_this: true
+    avoid_print: true
+
+    # Safety
+    avoid_dynamic_calls: true
+    cancel_subscriptions: true
+    close_sinks: true
+    unawaited_futures: true
+
+    # Documentation
+    public_member_api_docs: false  # Enable later when API stabilizes
+
+analyzer:
+  errors:
+    unawaited_futures: warning
+    cancel_subscriptions: warning
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SwiftDrop brand colours (matches lib/ui/theme/app_theme.dart) -->
+    <color name="splash_background">#FF121218</color>
+    <color name="primary">#FF2979FF</color>
+</resources>

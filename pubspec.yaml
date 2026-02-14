@@ -1,0 +1,33 @@
+name: swiftdrop
+description: "Zero-configuration, encrypted file sharing across Android, Windows, and Linux. Discover nearby devices automatically and transfer files with end-to-end AES-256 encryption — no setup required."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  convert: ^3.1.2
+  crypto: ^3.0.6
+  file_picker: ^8.3.7
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.2.1
+  hive: ^2.2.3
+  intl: ^0.20.2
+  multicast_dns: ^0.3.3
+  network_info_plus: ^7.0.0
+  nsd_android: ^2.2.0
+  path_provider: ^2.1.5
+  permission_handler: ^12.0.1
+  pointycastle: ^4.0.0
+  uuid: ^4.5.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  test: ^1.26.3
+
+flutter:
+  uses-material-design: true
